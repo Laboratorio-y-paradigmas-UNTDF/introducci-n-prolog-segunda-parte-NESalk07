@@ -58,7 +58,7 @@ vuelo(bue, bog, 380).
 % ============================================================
 
 % COMPLETAR: iguales(X, Y) :- ???
-iguales(_, _) :- fail.
+iguales(X, Y) :- X = Y. 
 
 
 % ============================================================
@@ -72,7 +72,7 @@ iguales(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR: son_identicos(X, Y) :- ???
-son_identicos(_, _) :- fail.
+son_identicos(X, Y) :- X == Y.
 
 
 % ============================================================
@@ -85,7 +85,7 @@ son_identicos(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR: descomponer(T, L) :- ???
-descomponer(_, _) :- fail.
+descomponer(T, L) :- T =.. L.
 
 
 % ============================================================
@@ -100,7 +100,7 @@ descomponer(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR: comparten_destino(X, Y) :- ???
-comparten_destino(_, _) :- fail.
+comparten_destino(X, Y) :- viaja(X, D), viaja(Y, D), X \= Y.
 
 
 % ============================================================
@@ -118,7 +118,7 @@ comparten_destino(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR: todos_los_viajeros(D, L) :- ???
-todos_los_viajeros(_, []) :- fail.
+todos_los_viajeros(D, L) :- findall(X, viaja(X, D), L).
 
 
 % ============================================================
@@ -132,7 +132,7 @@ todos_los_viajeros(_, []) :- fail.
 % ============================================================
 
 % COMPLETAR: destinos_unicos(L) :- ???
-destinos_unicos([]) :- fail.
+destinos_unicos(L) :- setof(D, X^viaja(X, D), L).
 
 
 % ============================================================
@@ -145,7 +145,7 @@ destinos_unicos([]) :- fail.
 % ============================================================
 
 % COMPLETAR: cuadrado(N, C) :- ???
-cuadrado(_, _) :- fail.
+cuadrado(N, C) :- C is N * N.
 
 
 % ============================================================
@@ -160,8 +160,15 @@ cuadrado(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR (dos cláusulas): factorial/2
-factorial(_, _) :- fail.
+%factorial(N, F) :- N = 0, F = 1.
+%factorial(N, F) :- N > 0, N1 is N - 1, factorial(N1, F1), F is N * F1.
 
+factorial(0, 1).
+factorial(N, F) :-
+    N > 0,
+    N1 is N - 1,
+    factorial(N1, F1),
+    F is N * F1.
 
 % ============================================================
 %  EJERCICIO 9 — Corte verde: maximo/3
@@ -174,7 +181,8 @@ factorial(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR: maximo/3
-maximo(_, _, _) :- fail.
+maximo(X, Y, X) :- X >= Y, !.
+maximo(_, Y, Y).
 
 
 % ============================================================
@@ -188,7 +196,8 @@ maximo(_, _, _) :- fail.
 % ============================================================
 
 % COMPLETAR: valor_absoluto/2
-valor_absoluto(_, _) :- fail.
+valor_absoluto(X, X) :- X >= 0, !.
+valor_absoluto(X, Y) :- Y is -X.
 
 
 % ============================================================
@@ -207,7 +216,13 @@ valor_absoluto(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR: clasificar_edad/2
-clasificar_edad(_, _) :- fail.
+clasificar_edad(X, Y) :- 
+    ( X >= 18 
+        -> ( X < 65 
+            -> Y = adulto 
+            ; Y = mayor )
+        ; Y = menor
+    ).
 
 
 % ============================================================
@@ -217,12 +232,12 @@ clasificar_edad(_, _) :- fail.
 %  REQUISITO: Persona debe estar en persona/2 (evita problemas con CWA).
 %
 %  ?- no_viaja(ana, ushuaia).    % true (ana va a parana y rosario)
-%  ?- \+ no_viaja(ana, parana).  % true (sí viaja)
+%  ?- \+ no_viaja(ana, parana).  % false (sí viaja)
 %  ?- no_viaja(diego, parana).   % true
 % ============================================================
 
 % COMPLETAR: no_viaja/2
-no_viaja(_, _) :- fail.
+no_viaja(Persona, Destino) :- persona(Persona, _), \+viaja(Persona, Destino).
 
 
 % ============================================================
@@ -236,7 +251,8 @@ no_viaja(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR (dos cláusulas): pertenece/2
-pertenece(_, _) :- fail.
+pertenece(X, [X|_]).
+pertenece(X, [_|T]) :- pertenece(X, T).
 
 
 % ============================================================
@@ -249,7 +265,8 @@ pertenece(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR (dos cláusulas): concatenar/3
-concatenar(_, _, _) :- fail.
+concatenar(L1, L2, L3) :- L1 = [], L3 = L2.
+concatenar([H|T], L2, [H|L3]) :- concatenar(T, L2, L3).
 
 
 % ============================================================
@@ -262,7 +279,8 @@ concatenar(_, _, _) :- fail.
 % ============================================================
 
 % COMPLETAR (dos cláusulas): longitud/2
-longitud(_, _) :- fail.
+longitud([], 0).
+longitud([_|T], N) :- longitud(T, M), N is M + 1.
 
 
 % ============================================================
@@ -276,7 +294,8 @@ longitud(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR (dos cláusulas): ultimo/2
-ultimo(_, _) :- fail.
+ultimo([X], X).
+ultimo([_|T], U) :- ultimo(T, U).
 
 
 % ============================================================
@@ -294,7 +313,9 @@ ultimo(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR: reversa/2 y reversa_aux/3
-reversa(_, _) :- fail.
+reversa(L, R) :- reversa_aux(L, [], R).
+reversa_aux([], Acc, Acc).
+reversa_aux([H|T], Acc, R) :- reversa_aux(T, [H|Acc], R).
 
 
 % ============================================================
@@ -308,7 +329,9 @@ reversa(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR: suma_lista/2 y suma_lista_aux/3
-suma_lista(_, _) :- fail.
+suma_lista(Lista, S) :- suma_lista_aux(Lista, 0, S).
+suma_lista_aux([], Acc, Acc).
+suma_lista_aux([H|T], Acc, S) :- NuevoAcc is Acc + H, suma_lista_aux(T, NuevoAcc, S).
 
 
 % ============================================================
@@ -322,7 +345,9 @@ suma_lista(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR: maximo_lista/2
-maximo_lista(_, _) :- fail.
+maximo_lista([X], X).
+maximo_lista([H|T], M) :- maximo_lista(T, M), H =< M.
+maximo_lista([H|T], H) :- maximo_lista(T, M), H > M.
 
 
 % ============================================================
@@ -336,7 +361,14 @@ maximo_lista(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR (dos cláusulas dependiendo de si H==X): contar/3
-contar(_, _, _) :- fail.
+
+% 1. Caso Base: Lista vacía siempre devuelve 0.
+contar(_, [], 0).
+
+% 2. Caso Recursivo: Procesa la cabeza y decide con un "if-then-else".
+contar(X, [H|T], N) :-
+    contar(X, T, M),
+    (X == H -> N is M + 1 ; N = M).
 
 
 % ============================================================
@@ -350,7 +382,8 @@ contar(_, _, _) :- fail.
 % ============================================================
 
 % COMPLETAR: pares/2
-pares(_, []) :- fail.
+% usando findall + member + condición de paridad
+pares(Lista, P) :- findall(X, (member(X, Lista), 0 is X mod 2), P).
 
 
 % ============================================================
@@ -363,8 +396,12 @@ pares(_, []) :- fail.
 % ============================================================
 
 % COMPLETAR: promedio_edades/1
-promedio_edades(_) :- fail.
-
+promedio_edades(P) :-
+    findall(E, persona(_, E), Edades),
+    sum_list(Edades, Suma),
+    length(Edades, Cantidad),
+    Cantidad > 0, % evitar división por cero
+    P is Suma / Cantidad.
 
 % ============================================================
 %  EJERCICIO 23 — Grafo: vuelo_directo_o_escala/2
@@ -379,7 +416,9 @@ promedio_edades(_) :- fail.
 % ============================================================
 
 % COMPLETAR: vuelo_directo_o_escala/2
-vuelo_directo_o_escala(_, _) :- fail.
+% con OR (;)
+vuelo_directo_o_escala( Origen, Destino ) :- vuelo( Origen, Destino, _ ) ; 
+    ( vuelo( Origen, Intermedio, _ ), vuelo( Intermedio, Destino, _ ) ).
 
 
 % ============================================================
@@ -397,7 +436,11 @@ vuelo_directo_o_escala(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR (dos cláusulas): ruta/3
-ruta(_, _, _) :- fail.
+
+%caso base
+ruta(A, B, [A,B]) :- vuelo(A, B, _).
+%caso recursivo
+ruta(A, B, [A|R]) :- vuelo(A, C, _), ruta(C, B, R).
 
 
 % ============================================================
@@ -421,8 +464,13 @@ color_disponible(verde).
 color_disponible(azul).
 
 % COMPLETAR: colorear_triangulo/3
-colorear_triangulo(_, _, _) :- fail.
-
+colorear_triangulo(A, B, C) :-
+    color_disponible(A),
+    color_disponible(B),
+    color_disponible(C),
+    A \= B,
+    B \= C,
+    A \= C.
 
 % ============================================================
 %  EJERCICIO 26 — Listas con condición: mayores_de/3
@@ -435,8 +483,8 @@ colorear_triangulo(_, _, _) :- fail.
 % ============================================================
 
 % COMPLETAR: mayores_de/2
-mayores_de(_, _) :- fail.
-
+mayores_de(Edad, Lista) :- 
+    setof(Nombre, Edadpersona^(persona(Nombre, Edadpersona), Edadpersona > Edad), Lista).
 
 % ============================================================
 %  EJERCICIO 27 — Integrador: estadisticas_lista/4
@@ -450,7 +498,12 @@ mayores_de(_, _) :- fail.
 % ============================================================
 
 % COMPLETAR: estadisticas_lista/4
-estadisticas_lista(_, _, _, _) :- fail.
+estadisticas_lista(Lista, Min, Max, Prom) :-
+    min_list(Lista, Min),
+    max_list(Lista, Max),
+    sum_list(Lista, Sum),
+    length(Lista, Length),
+    Prom is Sum / Length.
 
 
 % ============================================================
@@ -487,7 +540,9 @@ no_ataca(C, [C2|Cs], Dist) :-
 
 % COMPLETAR: cuatro_reinas/1
 % Pista: permutation([1,2,3,4], Sol), no_ataca_diagonales(Sol).
-cuatro_reinas(_) :- fail.
+cuatro_reinas(Sol) :-
+    permutation([1,2,3,4], Sol),
+    no_ataca_diagonales(Sol).
 
 
 % ============================================================
